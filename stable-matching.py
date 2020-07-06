@@ -55,3 +55,15 @@ doctors2['E'] = ['MTA', 'BW', 'CH', 'BID', 'MGH']
 
 print(galeShapley(hospital, doctors))
 print(galeShapley(hospital2, doctors2))
+
+hospital3 = dict()
+hospital3['H1'] = ['D2', 'D3', 'D1']
+hospital3['H2'] = ['D1', 'D3', 'D2']
+hospital3['H3'] = ['D3', 'D2', 'D1']
+
+doctors3 = dict()
+doctors3['D1'] = ['H1', 'H2', 'H3']
+doctors3['D2'] = ['H1', 'H3', 'H2']
+doctors3['D3'] = ['H2', 'H3', 'H1']
+
+print(galeShapley(hospital3, doctors3))
