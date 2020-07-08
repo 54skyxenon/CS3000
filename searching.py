@@ -18,6 +18,14 @@ def binarySearch(nums, target):
 
     return bsHelper(nums, target, 0, len(nums) - 1)
 
+# The dumb way of searching
+def linearSearch(nums, target):
+    for i in range(len(nums)):
+        if nums[i] == target:
+            return i
+
+    return -1
+
 assert binarySearch([2, 3, 8, 11, 15, 17, 28, 42], 28) == 6
 assert binarySearch([2, 3, 8, 11, 15, 17, 28, 42], 3) == 1
 assert binarySearch([2, 3, 8, 11, 15, 17, 28, 42], 69) == -1
