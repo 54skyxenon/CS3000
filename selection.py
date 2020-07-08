@@ -46,7 +46,7 @@ def getMedianItem(nums):
     if not nums:
         raise ValueError('List must have at least one element!')
 
-    return getKthMinItem(nums, len(nums) // 2)
+    return getKthMinItem(nums, math.ceil(len(nums) / 2))
 
 # Retrieve kth minimum item from list efficiently => O(n)
 def quickselect(nums, k):
@@ -63,15 +63,30 @@ def quickselect(nums, k):
         nums[0], nums[lo - 1] = nums[lo - 1], nums[0]
         return lo - 1
 
+    def MOM(nums):
+        m = math.ceil(len(nums) / 5)
+
+        M = []
+        for index in range(1, m + 1):
+            medians = []
+            for shift in range(1, 6):
+                shiftIndex = (5 * index - shift)
+                if shiftIndex < len(nums) and shiftIndex >= 0:
+                    medians.append(nums[shiftIndex])
+            M.append(getMedianItem(medians))
+        
+        return quickselect(M, math.ceil(m / 2))
+
     if len(nums) == 1:
         return nums[0]
 
-    r = partition(0, nums) + 1
+    pivot = MOM(nums)
+    r = partition(nums.index(pivot), nums) + 1
 
     if k == r:
         return nums[r - 1]
     elif k < r:
-        return quickselect(nums[:r-1], k)
+        return quickselect(nums[:r - 1], k)
     elif k > r:
         return quickselect(nums[r:], k - r)
 
@@ -82,9 +97,10 @@ assert getMinItem(example) == 2
 assert getSecondMinItem(example) == 3
 assert getKthMinItem(example, 6) == 17
 assert getMedianItem(example) == 11
+assert getMedianItem([1]) == 1
 
 # Stress test
-for i in range(2, 101):
+for i in range(1, 101):
     testCase = [random.randint(-1000, 1000) for _ in range(i)]
     kthOrderStatistic = random.choice(range(len(testCase))) + 1
     assert getKthMinItem(testCase, kthOrderStatistic) == quickselect(testCase, kthOrderStatistic)
