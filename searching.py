@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3
+# Author: Brandon Liang
 
 # Returns index of target in nums
 # If the target doesn't exist, return -1
