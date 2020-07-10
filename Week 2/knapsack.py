@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3
+# Author: Brandon Liang
 
 import numpy as np
 
