@@ -1,14 +1,11 @@
 #!/usr/local/bin/python3
 
-# SLS - segmented least squares
+# SLS - segmented least squares allows us to describe data in terms of multiple 
+# linear fits
 import numpy as np
 import warnings
 
 warnings.filterwarnings("ignore", message="Polyfit may be poorly conditioned")
-
-# global vars
-points = [(1, 1), (2, 1), (3, 3)]
-cost = 0.2
 
 # do preprocessing to obtain error terms - O(n^2)
 def getEpsilons():
@@ -49,7 +46,7 @@ def sls(n):
     dp, epsilons = fillTables(n)
 
     def findSolution(dp, n):
-        if n <= 0:
+        if n == 0:
             return []
         elif n == 1:
             return [[1]]
@@ -60,4 +57,53 @@ def sls(n):
 
     return findSolution(dp, n)
 
+# fill the DP table for V2 and return both DP and epsilon tables - O(n)
+def fillTablesV2(n, k):
+    dp = np.zeros((n + 1, k + 1))
+    dp[1:,0] = float('inf') 
+    epsilons = getEpsilons()
+
+    for l in range(1, k + 1):
+        for j in range(1, n + 1):
+            dp[j][l] = min([epsilons[i - 1][j - 1] + dp[i - 1][l - 1] for i in range(1, j + 1)])
+
+    return dp, epsilons
+
+# sls, but instead of a cost, we're given a max number of lines to use (k)
+def slsV2(n, k):
+    if k == 1:
+        return [list(range(1, n + 1))]
+    
+    dp, epsilons = fillTablesV2(n, k)
+
+    def findSolution(dp, n, k):
+        if n == 0:
+            return []
+        elif n == 1:
+            return [[1]]
+        else:
+            argmin = [(epsilons[i - 1][n - 1] + dp[i - 1][k - 1]) for i in range(1, n + 1)]
+            x = argmin.index(min(argmin)) + 1
+            return [list(range(x, n + 1))] + findSolution(dp, x - 1, k - 1)
+
+    return findSolution(dp, n, k)
+
+# global vars
+points = [(1, 1), (2, 1), (3, 3)]
+print('\nVersion 1:')
+
+# cost is small enough to break into two
+cost = 0.2
 print(sls(len(points)))
+
+# cost is too great to break into two
+cost = 2
+print(sls(len(points)))
+
+print('\nVersion 2:')
+# better example for version 2 (restricted to 1-4 lines)
+points = [(1, 1), (2, 1), (3, 3), (5, 5), (6, 5), (7, 5)]
+print(slsV2(len(points), 1))
+print(slsV2(len(points), 2))
+print(slsV2(len(points), 3))
+print(slsV2(len(points), 4))
