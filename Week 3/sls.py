@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3
+# Author: Brandon Liang
 
 # SLS - segmented least squares allows us to describe data in terms of multiple 
 # linear fits
