@@ -5,4 +5,5 @@ Hosts Python scripts I've written for pseudocode snippets during my Summer II al
 ### Topics by week:
 * Week 1: Introduction, Stable Matching, Divide and Conquer
 * Week 2: Divide and Conquer, Dynamic Programming
-* Week 3: Dynamic Programming, Midterm I Review
+* Week 3: Dynamic Programming cont., Midterm I Review
+* Week 4: Graph Theory
