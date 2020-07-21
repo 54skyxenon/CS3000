@@ -3,6 +3,8 @@
 
 from collections import defaultdict, deque
 
+# BFS - Breadth-First Search
+
 # run BFS on a given start node in the graph
 # give back path taken and which layers nodes were found in BFS, inf means not found
 def BFS(graph, startNode):
