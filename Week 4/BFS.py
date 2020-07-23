@@ -4,6 +4,7 @@
 from collections import defaultdict, deque
 
 # BFS - Breadth-First Search
+# Time complexity: O(n + m), where n = number of vertices and m = number of edges
 
 # run BFS on a given start node in the graph
 # give back path taken and which layers nodes were found in BFS, inf means not found

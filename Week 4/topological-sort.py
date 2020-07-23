@@ -3,6 +3,9 @@
 
 from collections import deque, defaultdict
 
+# n = number of vertices
+# m = number of edges
+
 # O(n^2 + nm) algorithm for topological ordering a DAG
 def simpleTopOrder(graph):
     i = 1

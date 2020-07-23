@@ -4,3 +4,4 @@ hw2/
 hw3/
 hw4/
 *.pdf
+__pycache__/
