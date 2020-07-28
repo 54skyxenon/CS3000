@@ -29,7 +29,7 @@ def dijkstraNaive(graph, start):
         Q -= {u}
 
         # Update the outneighbors of u
-        for v in graph[u]:
+        for v in (graph[u].keys() & Q):
             if dists[v] > dists[u] + graph[u][v]:
                 dists[v] = dists[u] + graph[u][v]
                 parents[v] = u
@@ -57,7 +57,7 @@ def dijkstra(graph, start):
         u, dists[u] = Q.popitem()
 
         # consider outneighbors
-        for v in graph[u]:
+        for v in (graph[u].keys() & Q):
             dists[v] = lookups[v]
             
             if dists[v] > dists[u] + graph[u][v]:
@@ -81,7 +81,16 @@ graphExample2['C'] = {'B': 1, 'D': 2, 'E': 1}
 graphExample2['D'] = {'E': 3}
 graphExample2['E'] = {'D': 6}
 
+# fails with negative weights
+graphExample3 = defaultdict(dict)
+graphExample3['S'] = {'A': 5, 'B': 2}
+graphExample3['A'] = {'B': -7}
+graphExample3['B'] = {}
+
 assert dijkstraNaive(graphExample1, 'A') == dijkstra(graphExample1, 'A')
 assert dijkstraNaive(graphExample2, 'A') == dijkstra(graphExample2, 'A')
+assert dijkstraNaive(graphExample3, 'S') == dijkstra(graphExample3, 'S')
 print(dijkstra(graphExample1, 'A'))
 print(dijkstra(graphExample2, 'A'))
+print(dijkstra(graphExample3, 'S'))
+
