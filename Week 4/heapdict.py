@@ -1,5 +1,5 @@
 # Code taken from: https://github.com/DanielStutzbach/heapdict (not for this class)
-# This is a heap that supports decrease-key, which is needed for Dijkstra
+# This is a heap that supports decrease-key, which is needed for Dijkstra and Prim's
 
 try:
     from collections.abc import MutableMapping
