@@ -10,3 +10,5 @@ You may need to `pip install numpy` first to run all the scripts, since some alg
 * Week 3: Dynamic Programming, Midterm I Review
 * Week 4: Graph Theory
 * Week 5: Graph Theory, Midterm II Review
+* Week 6: Graph Theory, Greedy Algorithms
+* Week 7: Complexity Theory/NP-Completeness
