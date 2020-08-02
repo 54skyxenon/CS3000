@@ -6,9 +6,9 @@ import sys
 import os
 sys.path.append(os.path.abspath('../Week 4'))
 
-from collections import defaultdict
-from heapdict import heapdict
 import random
+from heapdict import heapdict
+from collections import defaultdict
 
 # Five algorithms for computing the minimal spanning tree of a connected, weighted, undirected graph are:
 # GenericMST, Boruvka's, Prim's, Kruskal's and Reverse Kruskal (which wasn't gone over in class)
@@ -40,6 +40,7 @@ def generic(graph):
     return A
 
 # Limitation: all edge weights must be distinct
+# Loop through all components and select min-weighted edge connecting to another component => O(m log n)
 def boruvka(graph):
     T = set()
 
@@ -49,7 +50,7 @@ def boruvka(graph):
     # This main loop takes O(log n)
     while len(components) > 1:
         newComponents = list()
-        
+
         while components:
             cut = components.pop()
             # (safe edge itself, connected component to union, min distance, index of cc to union)
@@ -61,8 +62,9 @@ def boruvka(graph):
                         # union whichever connected component contains the neighbor
                         for ccIndex in range(len(components)):
                             if v in components[ccIndex]:
-                                safeEdge = ((u, v), components[ccIndex], graph[u][v], ccIndex)
-            
+                                safeEdge = (
+                                    (u, v), components[ccIndex], graph[u][v], ccIndex)
+
             cut |= safeEdge[1]
             T |= {safeEdge[0]}
             newComponents.append(cut)
@@ -72,6 +74,7 @@ def boruvka(graph):
 
     return T
 
+# Basic idea is to join shortest edge from all connected nodes, starting with a single random node => O(m log n)
 def prim(graph):
     # let Q be a priority queue storing V
     Q = heapdict((v, float('inf')) for v in graph)
@@ -96,19 +99,59 @@ def prim(graph):
             T |= {(v, last[v])}
     return T
 
+# Quick and dirty singly linked list class that supports O(1) time unions for Kruskal
+class LinkedList:
+    def __init__(self, data, next=None):
+        self.data = data
+        self.next = next
+
+        if next:
+            self.end = next.end
+        else:
+            self.end = self
+
+    def iter(self):
+        iterable = list()
+
+        ptr = self
+        while ptr:
+            iterable.append(ptr.data)
+            ptr = ptr.next
+
+        return iterable
+
+    def joinAtEnd(self, other):
+        self.end.next = other
+        self.end = other.end
+
+# Sort edges then add shortest edge not making a cycle at each step => O(m log m)
 def kruskal(graph):
     T = set()
 
+    find, union = dict(), dict()
+
+    index = 1
+    for node in graph:
+        find[node] = index
+        union[index] = LinkedList(node)
+        index += 1
+    
     edges = list()
     for u in graph:
         for v in graph[u]:
             edges.append((u, v))
             edges.append((v, u))
-    
-    edges.sort(key=lambda x: graph[x[0]][x[1]])
-    print('edges: {}'.format(str(edges)))
 
-    # TODO
+    edges.sort(key=lambda x: graph[x[0]][x[1]])
+
+    for e in edges:
+        u, v, w = e[0], e[1], graph[e[0]][e[1]]
+
+        if find[u] != find[v]:
+            T |= {(u, v)}
+            union[find[u]].joinAtEnd(union[find[v]])
+            for node in union[find[u]].iter():
+                find[node] = find[u]
 
     return T
 
@@ -127,12 +170,12 @@ boruvkaMST = boruvka(graphExample1)
 primMST = prim(graphExample1)
 kruskalMST = kruskal(graphExample1)
 
-print(genericMST)
-print(boruvkaMST)
-print(primMST)
-print(kruskalMST)
-
 # are the edges the same for all four algorithms (order and direction don't matter)
-assert set([tuple(sorted(elt)) for elt in genericMST]) == set([tuple(sorted(elt)) for elt in boruvkaMST])
-assert set([tuple(sorted(elt)) for elt in boruvkaMST]) == set([tuple(sorted(elt)) for elt in primMST])
-assert set([tuple(sorted(elt)) for elt in primMST]) == set([tuple(sorted(elt)) for elt in kruskalMST])
+def orderedMST(mst):
+    return set([tuple(sorted(edge)) for edge in mst])
+
+assert orderedMST(genericMST) == orderedMST(boruvkaMST)
+assert orderedMST(boruvkaMST) == orderedMST(primMST)
+assert orderedMST(primMST) == orderedMST(kruskalMST)
+
+print('MST edges: {}'.format(kruskalMST))
