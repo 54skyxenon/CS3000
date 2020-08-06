@@ -6,7 +6,7 @@ import sys
 import os
 sys.path.append(os.path.abspath('../Week 4'))
 
-from collections import defaultdict
+from collections import defaultdict, deque
 from heapdict import maxHeapdict
 
 # DIFFERENCE: We'll select a smart augmented path this time
@@ -34,9 +34,25 @@ def fattestPath(network, start, end):
     return path
 
 def shortestPath(network, start, end):
-    pass
+    # Do a BFS, we are only concerned about the number of hops (not actual distance)
+    Q = deque([(start, 0)])
+    dists = dict((v, (float('inf'), None)) for v in network)
+    dists[start] = (0, None)
 
-def fordFulkerson(network):
+    while Q:
+        next, traveled = Q.popleft()
+
+        for out in network[next]:
+            if traveled + 1 < dists[out][0]:
+                Q.append((out, traveled + 1))
+                dists[out] = (traveled + 1, next)
+
+    path = [end]
+    while dists[path[0]][1]:
+        path = [dists[path[0]][1]] + path
+    return path
+
+def fordFulkerson(network, useFattestPath=True):
     residual = defaultdict(dict)
     for u in network:
         for v in network[u]:
@@ -56,7 +72,9 @@ def fordFulkerson(network):
 
     maxFlow = float('-inf')
     while True:
-        augmentingPath = fattestPath(dropZeroEdges(residual), 's', 't')
+        pathArgs = [dropZeroEdges(residual), 's', 't']
+        # find an OPTIMAL augmenting path
+        augmentingPath = fattestPath(*pathArgs) if useFattestPath else shortestPath(*pathArgs)
 
         augment = float('inf')
         for i in range(len(augmentingPath) - 1):
@@ -101,5 +119,5 @@ networkExample3['7'] = {'3': 6, 't': 10}
 networkExample3['t'] = set()
 
 print('Max flow 1: {}'.format(fordFulkerson(networkExample1)))
-print('Max flow 2: {}'.format(fordFulkerson(networkExample2)))
+print('Max flow 2: {}'.format(fordFulkerson(networkExample2, useFattestPath=False)))
 print('Max flow 3: {}'.format(fordFulkerson(networkExample3)))
