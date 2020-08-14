@@ -108,7 +108,7 @@ def twoSAT(expression):
 # 3-SAT: 2-SAT, except with 3-clauses
 # 3-SAT verifiable in polynomial time (P), but we don't know if it's solvable in polynomial time (NP)
 # In other words, does P = NP?
-# The time complexity specifically for 3-SAT is O(3^n), for n variables
+# The time complexity specifically for this brute force 3-SAT is O(m * 2^n), for n variables and m clauses
 
 def threeSAT(expression):
     formula = ThreeSATFormula(expression)
