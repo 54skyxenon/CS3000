@@ -3,22 +3,24 @@
 
 import random
 
+# helper to remove a node and its edges from the graph
+
+
+def drop(graph, node):
+    newGraph = dict((v, set()) for v in graph if v != node)
+    for u in graph.keys() - {node}:
+        for v in graph[u]:
+            if v != node:
+                newGraph[u].add(v)
+
+    return newGraph
+
 # Using Bounded Search Tree to check for existence a k-sized vertex cover
-# This problem is fixed parameter tractable, with a runtime of O(2^k * |E|)
+# This problem is fixed parameter tractable, with a runtime of O(2^k * m)
 
 
 def bstvc(graph, k):
     E = sum([len(graph[v]) for v in graph]) // 2
-
-    # helper to remove a node and its edges from the graph
-    def drop(graph, node):
-        newGraph = dict((v, set()) for v in graph if v != node)
-        for u in graph.keys() - {node}:
-            for v in graph[u]:
-                if v != node:
-                    newGraph[u].add(v)
-
-        return newGraph
 
     if E == 0:
         return True
